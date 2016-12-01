@@ -4,6 +4,15 @@ function loadMenu(fileName) {
     return parseJSON(loadJSON(fileName))
 }
 
+function checkItem(item, menu) {
+  for (let key in menu) {
+    if (item.toLowerCase() == menu[key].name.toLowerCase()) {
+      return true
+    }
+  }
+  return false
+}
+
 function formatMenu(menu, lineLength) {
   let result = []
   const welcome = "Welcome to The Little Belt Restaurant!"
@@ -68,4 +77,4 @@ function computeOrderTotal(order, menu) {
     return order.reduce(summing, 0)
 }
 
-module.exports = { loadMenu, formatOrder, formatOrderLine, formatMenu, formatMenuLine }
+module.exports = { loadMenu, formatOrder, formatOrderLine, formatMenu, formatMenuLine, checkItem }

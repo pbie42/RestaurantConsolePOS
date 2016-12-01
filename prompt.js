@@ -1,11 +1,55 @@
-const prompt = require('prompt');
+const prompt = require('prompt')
+const inquirer = require('inquirer')
 
-const { loadMenu, formatOrderLine } = require(process.cwd() + "/src/main")
+const { loadMenu, formatOrderLine, formatMenu, checkItem } = require(process.cwd() + "/src/main")
 
 let x = 0,
     arr = []
 
+const menu = loadMenu("menu")
 
+let questions = [
+  {
+    type: 'list',
+    name: 'item',
+    message: 'Which item was ordered?',
+    choices: ['Hamburger', 'Chicken Sandwich', 'French Fries', 'Pizza'],
+    filter: function (val) {
+      return val.toLowerCase()
+    }
+  },
+  {
+    type: 'input',
+    name: 'amount',
+    message: 'How many were ordered?',
+    validate: function (value) {
+      var valid = !isNaN(parseFloat(value))
+      return valid || 'Please enter a number'
+    },
+    filter: Number
+  },
+  {
+    type: 'confirm',
+    name: 'anotherItem',
+    message: 'Is there another item to order?',
+    default: true
+  }
+]
+
+function ask() {
+  inquirer.prompt(questions).then(function (answers) {
+    arr.push(answers.item, answers.amount)
+    if (answers.anotherItem) {
+      ask()
+    } else {
+      console.log(arr)
+    }
+  }).catch((error) => {
+        console.log(error);
+  })
+}
+
+/*
 let schema = {
   properties: {
     Item: {
@@ -36,12 +80,14 @@ function getOrder() {
     }
   });
 }
+*/
 
+/*
 function todaysMenu() {
   console.log('\n');
   console.log("When your order is ready:\n")
   console.log("Please enter the item in the item prompt");
-  console.log("Please enter the amount in the amount prompt\n");
+  console.log("and the amount ordered in the amount prompt\n");
   console.log("when your order is finished:\n");
   console.log("Enter 'Done' in the item prompt");
   console.log("Enter 0 in the amount prompt\n");
@@ -50,26 +96,14 @@ function todaysMenu() {
 function orderEntered() {
   console.log(arr)
 }
+*/
 
 
-let menu = loadMenu("menu")
 
-console.log(menu[1]);
+console.log(formatMenu(menu, 38))
+//todaysMenu()
+//prompt.start()
+//getOrder()
 
-function printMenu(menu) {
-  console.log("\n");
-  console.log("Welcome to The Little Belt Restaurant!");
-  console.log("Today's Menu consists of:\n");
-  for ( let key in menu ) {
-    let price = menu[key].price
-    console.log(menu[key].name + " " + price.amount / 100 + " " + price.currency);
-  }
-}
-
-printMenu(menu)
-todaysMenu()
-prompt.start()
-getOrder()
-
-
+ask()
 module.exports = { }

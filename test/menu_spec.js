@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 
-const { loadMenu, formatMenu, formatMenuLine, formatOrder, formatOrderLine } = require(process.cwd() + "/src/main")
+const { loadMenu, formatMenu, formatMenuLine, formatOrder, formatOrderLine, checkItem } = require(process.cwd() + "/src/main")
 
 describe("Display Menu", function () {
 
@@ -37,6 +37,18 @@ describe("Display Menu", function () {
       })
 
     })
+
+})
+
+describe("Order Check", function () {
+
+  it("checks if item is on the menu", function () {
+    const itemName = "French Fries"
+    const menu = loadMenu("menu")
+    const menuCheck = checkItem(itemName, menu)
+    const expectedResult = true
+    expect(menuCheck).to.equal(expectedResult)
+  })
 
 })
 
