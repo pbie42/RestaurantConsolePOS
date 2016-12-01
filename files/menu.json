@@ -1,0 +1,6 @@
+{
+    "1": {"name": "Hamburger", "price": { "amount": 1500, "currency":"EUR"}},
+    "2": {"name": "Chicken Sandwich", "price": { "amount": 1000, "currency":"EUR"}},
+    "3": {"name": "French Fries", "price": { "amount": 500, "currency":"EUR"}},
+    "4": {"name": "Pizza", "price": { "amount": 1200, "currency":"EUR"}}
+}
