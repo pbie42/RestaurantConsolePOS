@@ -1,13 +1,41 @@
 const { expect } = require('chai')
 
-const { loadMenu, formatOrder, formatOrderLine } = require(process.cwd() + "/src/main")
+const { loadMenu, formatMenu, formatMenuLine, formatOrder, formatOrderLine } = require(process.cwd() + "/src/main")
 
-describe("Menu", function() {
+describe("Display Menu", function () {
 
-    it("loads from the db", function() {
-        const menu = loadMenu("menu")
-        expect(Object.keys(menu).length).to.equal(4)
-        expect(menu).to.have.property("1")
+    describe("Printing", function () {
+
+      describe("Menu Line", function () {
+
+        it("formats menu item to displayable string", function () {
+          const menu = loadMenu("menu")
+          const item = menu[1]
+          const itemStr = formatMenuLine(item, 38)
+          const expectedStr = "Hamburger:                      15 EUR"
+          expect(itemStr).to.equal(expectedStr)
+        })
+
+      })
+
+      describe("Full Menu", function () {
+
+        it("displays the current menu with prices", function () {
+          const menu = loadMenu("menu")
+          const menuStr = formatMenu(menu, 38)
+          const expectedStr = [
+            "Welcome to The Little Belt Restaurant!",
+            "Today's Menu consists of:             ",
+            "\nHamburger:                      15 EUR",
+            "Chicken Sandwich:               10 EUR",
+            "French Fries:                    5 EUR",
+            "Pizza:                          12 EUR"
+          ].join("\n")
+          expect(menuStr).to.equal(expectedStr)
+        })
+
+      })
+
     })
 
 })
