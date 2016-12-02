@@ -26,7 +26,7 @@ describe("Display Menu", function () {
           const menu = loadMenu("menu")
           const menuStr = formatMenu(menu, 38)
           const expectedStr = [
-            "Welcome to The Little Belt Restaurant!",
+            "Welcome to The Old Pittsburgh Restaurant!",
             "Today's Menu consists of:             \n",
             "Hamburger:                      15 EUR",
             "Chicken Sandwich:               10 EUR",
@@ -118,6 +118,7 @@ describe("Order Print", function() {
             it("can be formatted to string", function() {
                 const orderStr = formatOrder(order, menu, 30)
                 const expectedStr = [
+                    "Here is your reciept:         \n",
                     "2 x Hamburgers:         30 EUR",
                     "2 x French Fries:       10 EUR",
                     "1 x Pizza:              12 EUR",

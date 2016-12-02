@@ -1,7 +1,7 @@
 const prompt = require('prompt')
 const inquirer = require('inquirer')
 
-const { formatOrderLine, convertOrder} = require(process.cwd() + "/src/main")
+const { formatOrder, Line, convertOrder} = require(process.cwd() + "/src/main")
 const { loadMenu, checkItem, getMenuItems, formatMenu } = require(process.cwd() + "/src/menu")
 
 let x = 0,
@@ -45,7 +45,8 @@ function ask() {
     if (answers.anotherItem) {
       ask()
     } else {
-      console.log(convertOrder(arr, menu))
+      let order = convertOrder(arr, menu)
+      console.log(formatOrder(order, menu, 30))
     }
   }).catch((error) => {
         console.log(error);

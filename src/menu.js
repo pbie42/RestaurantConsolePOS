@@ -16,7 +16,7 @@ function getMenuItems(menu) {
 
 function formatMenu(menu, lineLength) {
   let result = []
-  const welcome = "Welcome to The Little Belt Restaurant!"
+  const welcome = "Welcome to The Old Pittsburgh Restaurant!"
   const consists = "Today's Menu consists of:             "
   for (let key in menu) {
     result[key] = formatMenuLine(menu[key], lineLength)
