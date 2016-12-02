@@ -4,6 +4,7 @@ function loadMenu(fileName) {
     return parseJSON(loadJSON(fileName))
 }
 
+/*
 function checkItem(item, menu) {
   for (let key in menu) {
     if (item.toLowerCase() == menu[key].name.toLowerCase()) {
@@ -12,37 +13,30 @@ function checkItem(item, menu) {
   }
   return false
 }
+*/
 
-function getMenuItems(menu) {
-  let result = []
+function getItemID(itemName, menu) {
   for (let key in menu) {
-    result.push(menu[key].name)
+    if (menu[key].name.toLowerCase() == itemName.toLowerCase()) {
+      return Number(key)
+    }
   }
-  return result
 }
 
-function formatMenu(menu, lineLength) {
-  let result = []
-  const welcome = "Welcome to The Little Belt Restaurant!"
-  const consists = "Today's Menu consists of:             "
-  for (let key in menu) {
-    result[key] = formatMenuLine(menu[key], lineLength)
+function convertOrder(order, menu) {
+  let arr = []
+  let i = 0
+  while (i < order.length) {
+    let orderItem = {}
+    if (i == 0 || i % 2 == 0) {
+      orderItem.id = getItemID(order[i], menu)
+      i++
+    }
+    orderItem.qty = order[i]
+    arr.push(orderItem)
+    i++
   }
-  result.unshift(consists)
-  result.unshift(welcome)
-  return result.join("\n")
-}
-
-function formatMenuLine(item, lineLength) {
-  const itemName = item.name
-
-  const price = priceFor(1, item)
-  const formattedPrice = price + " " + item.price.currency
-
-  const paddingN = lineLength - itemName.length - formattedPrice.length - 1
-  const padding = makeSpaces(paddingN)
-
-  return itemName + ":" + padding + formattedPrice
+  return arr
 }
 
 function formatOrder(order, menu, lineLength) {
@@ -85,4 +79,4 @@ function computeOrderTotal(order, menu) {
     return order.reduce(summing, 0)
 }
 
-module.exports = { loadMenu, formatOrder, formatOrderLine, formatMenu, formatMenuLine, checkItem, getMenuItems }
+module.exports = { formatOrder, formatOrderLine, priceFor, getItemID, convertOrder }

@@ -1,6 +1,8 @@
 const { expect } = require('chai')
 
-const { loadMenu, formatMenu, formatMenuLine, formatOrder, formatOrderLine, checkItem, getMenuItems } = require(process.cwd() + "/src/main")
+const { formatOrder, formatOrderLine, priceFor, getItemID, convertOrder } = require(process.cwd() + "/src/main")
+
+const { loadMenu, formatMenu, formatMenuLine, getMenuItems } = require(process.cwd() + "/src/menu")
 
 describe("Display Menu", function () {
 
@@ -25,8 +27,8 @@ describe("Display Menu", function () {
           const menuStr = formatMenu(menu, 38)
           const expectedStr = [
             "Welcome to The Little Belt Restaurant!",
-            "Today's Menu consists of:             ",
-            "\nHamburger:                      15 EUR",
+            "Today's Menu consists of:             \n",
+            "Hamburger:                      15 EUR",
             "Chicken Sandwich:               10 EUR",
             "French Fries:                    5 EUR",
             "Pizza:                          12 EUR"
@@ -40,15 +42,47 @@ describe("Display Menu", function () {
 
 })
 
-describe("Get Items", function () {
-  it("gets the current menu items", function () {
-    const menu = loadMenu("menu")
-    const currentItems = getMenuItems(menu)
-    const expectedArr = ['Hamburger', 'Chicken Sandwich', 'French Fries', 'Pizza']
-    expect(currentItems).to.eql(expectedArr)
+describe("Get Order", function () {
+
+  describe("Get Item Id", function () {
+
+    it("gets the id number of the item", function () {
+      const menu = loadMenu("menu")
+      const itemName = "French Fries"
+      const expectedResult = 3;
+      const itemID = getItemID(itemName, menu)
+      expect(itemID).to.equal(expectedResult)
+    })
+
   })
+
+  describe("Get Items", function () {
+
+    it("gets the current menu items", function () {
+      const menu = loadMenu("menu")
+      const currentItems = getMenuItems(menu)
+      const expectedArr = ['Hamburger', 'Chicken Sandwich', 'French Fries', 'Pizza']
+      expect(currentItems).to.eql(expectedArr)
+    })
+
+  })
+
+  describe("Convert Order", function () {
+
+    const menu = loadMenu("menu")
+    const order = ['hamburger', 3, 'french fries', 5]
+    const orderConvert = convertOrder(order, menu)
+    const expectedResult = [ { id: 1, qty: 3 }, { id: 3, qty: 5 } ]
+    it("converts inputted order for order printing", function () {
+      expect(orderConvert).to.eql(expectedResult)
+    })
+
+  })
+
 })
 
+
+/*
 describe("Order Check", function () {
 
   it("checks if item is on the menu", function () {
@@ -60,8 +94,9 @@ describe("Order Check", function () {
   })
 
 })
+*/
 
-describe("Order", function() {
+describe("Order Print", function() {
 
     describe("Printing", function(){
 

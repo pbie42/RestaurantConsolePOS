@@ -1,7 +1,8 @@
 const prompt = require('prompt')
 const inquirer = require('inquirer')
 
-const { loadMenu, formatOrderLine, formatMenu, checkItem, getMenuItems } = require(process.cwd() + "/src/main")
+const { formatOrderLine, convertOrder} = require(process.cwd() + "/src/main")
+const { loadMenu, checkItem, getMenuItems, formatMenu } = require(process.cwd() + "/src/menu")
 
 let x = 0,
     arr = []
@@ -17,7 +18,7 @@ let questions = [
     message: 'Which item was ordered?',
     choices: currentMenu,
     filter: function (val) {
-      return val.toLowerCase()
+      return val
     }
   },
   {
@@ -44,7 +45,7 @@ function ask() {
     if (answers.anotherItem) {
       ask()
     } else {
-      console.log(arr)
+      console.log(convertOrder(arr, menu))
     }
   }).catch((error) => {
         console.log(error);
