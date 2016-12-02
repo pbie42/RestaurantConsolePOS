@@ -1,19 +1,21 @@
 const prompt = require('prompt')
 const inquirer = require('inquirer')
 
-const { loadMenu, formatOrderLine, formatMenu, checkItem } = require(process.cwd() + "/src/main")
+const { loadMenu, formatOrderLine, formatMenu, checkItem, getMenuItems } = require(process.cwd() + "/src/main")
 
 let x = 0,
     arr = []
 
 const menu = loadMenu("menu")
 
+const currentMenu = getMenuItems(menu)
+
 let questions = [
   {
     type: 'list',
     name: 'item',
     message: 'Which item was ordered?',
-    choices: ['Hamburger', 'Chicken Sandwich', 'French Fries', 'Pizza'],
+    choices: currentMenu,
     filter: function (val) {
       return val.toLowerCase()
     }
@@ -23,8 +25,8 @@ let questions = [
     name: 'amount',
     message: 'How many were ordered?',
     validate: function (value) {
-      var valid = !isNaN(parseFloat(value))
-      return valid || 'Please enter a number'
+      let valid = !isNaN(parseFloat(value))
+      return valid && value > 0 || 'Please enter a number or a value greater than 0'
     },
     filter: Number
   },

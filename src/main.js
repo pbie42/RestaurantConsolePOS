@@ -13,6 +13,14 @@ function checkItem(item, menu) {
   return false
 }
 
+function getMenuItems(menu) {
+  let result = []
+  for (let key in menu) {
+    result.push(menu[key].name)
+  }
+  return result
+}
+
 function formatMenu(menu, lineLength) {
   let result = []
   const welcome = "Welcome to The Little Belt Restaurant!"
@@ -77,4 +85,4 @@ function computeOrderTotal(order, menu) {
     return order.reduce(summing, 0)
 }
 
-module.exports = { loadMenu, formatOrder, formatOrderLine, formatMenu, formatMenuLine, checkItem }
+module.exports = { loadMenu, formatOrder, formatOrderLine, formatMenu, formatMenuLine, checkItem, getMenuItems }

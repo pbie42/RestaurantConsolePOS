@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 
-const { loadMenu, formatMenu, formatMenuLine, formatOrder, formatOrderLine, checkItem } = require(process.cwd() + "/src/main")
+const { loadMenu, formatMenu, formatMenuLine, formatOrder, formatOrderLine, checkItem, getMenuItems } = require(process.cwd() + "/src/main")
 
 describe("Display Menu", function () {
 
@@ -38,6 +38,15 @@ describe("Display Menu", function () {
 
     })
 
+})
+
+describe("Get Items", function () {
+  it("gets the current menu items", function () {
+    const menu = loadMenu("menu")
+    const currentItems = getMenuItems(menu)
+    const expectedArr = ['Hamburger', 'Chicken Sandwich', 'French Fries', 'Pizza']
+    expect(currentItems).to.eql(expectedArr)
+  })
 })
 
 describe("Order Check", function () {
