@@ -3,7 +3,7 @@ const fs = require('fs')
 
 let doc = new pdf
 
-doc.pipe(fs.createWriteStream('node.pdf'))
+doc.pipe(fs.createWriteStream('receipt.pdf'))
 
 doc.font('fonts/Ewert-Regular.ttf', 10)
      .fontSize(30)
@@ -300,6 +300,13 @@ function labels() {
 
     doc.end()
     resolve()
+  });
+}
+
+function items(order) {
+  return new Promise(function(resolve, reject) {
+    //TODO Need to figure out what information I'm going to pass here and also
+    //figure out what kind of loops need to be done
   });
 }
 
