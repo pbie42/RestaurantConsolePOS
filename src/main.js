@@ -44,7 +44,7 @@ function formatOrder(order, menu, lineLength) {
     result.push(makeLine(lineLength))
     const total = computeOrderTotal(order, menu)
     result.push(orderTotal(total, lineLength))
-    result.unshift("Here is your reciept:         \n")
+    result.unshift("Here is your order:         \n")
     return result.join("\n")
 }
 

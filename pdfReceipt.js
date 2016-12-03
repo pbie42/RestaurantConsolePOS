@@ -31,6 +31,14 @@ doc.font('fonts/Rye-Regular.ttf', 0, 200)
 doc.moveUp()
 doc.text('_______________________________________________________')
 
+doc.text('', 252, 265, {
+      align: 'center'
+    })
+    .font('fonts/Roboto-Medium.ttf')
+    .fontSize(20)
+    .fillColor('#000000')
+    .text('Your Order')
+
 function fillInArea() {
   return new Promise(function(resolve, reject) {
     let i = 0
@@ -230,7 +238,7 @@ function labels() {
      .stroke("#b0b0b0")
 
     //Item Description Text
-    doc.text('', 177, 295)
+    doc.text('', 170, 295)
         .font('fonts/Roboto-Light.ttf')
         .fontSize(13)
         .fillColor('#000000')

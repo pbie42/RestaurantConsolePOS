@@ -5,13 +5,13 @@ const { formatOrder, Line, convertOrder} = require(process.cwd() + "/src/main")
 const { loadMenu, checkItem, getMenuItems, formatMenu } = require(process.cwd() + "/src/menu")
 
 let x = 0,
-    arr = []
+    orderArr = []
 
 const menu = loadMenu("menu")
 
 const currentMenu = getMenuItems(menu)
 
-let questions = [
+let questions1 = [
   {
     type: 'list',
     name: 'item',
@@ -39,68 +39,74 @@ let questions = [
   }
 ]
 
-function ask() {
-  inquirer.prompt(questions).then(function (answers) {
-    arr.push(answers.item, answers.amount)
+let questions2 = [
+  {
+    type: 'confirm',
+    name: 'startOver',
+    message: 'Is this the correct order?',
+    default: true
+  }
+]
+/*
+let questions3 = [
+  {
+    type: 'list',
+    name: 'tip',
+    message: 'Would the client like to add a tip?',
+    choices: tipChoices,
+    filter: function (val) {
+      return val
+    }
+  }
+]
+*/
+function ask1() {
+  inquirer.prompt(questions1).then(function (answers) {
+    orderArr.push(answers.item, answers.amount)
     if (answers.anotherItem) {
-      ask()
+      ask1()
     } else {
-      let order = convertOrder(arr, menu)
+      let order = convertOrder(orderArr, menu)
       console.log(formatOrder(order, menu, 30))
+      ask2()
     }
   }).catch((error) => {
         console.log(error);
   })
 }
 
-/*
-let schema = {
-  properties: {
-    Item: {
-      pattern: /^[a-zA-Z\s\-]+$/,
-      message: 'Item can only contain letters, spaces, or dashes',
-      required: true
-    },
-    Amount: {
-      pattern: /^\d+$/,
-      message: 'Amount can only be a number',
-      required: true
-    }
-  }
-}
-
-
-function getOrder() {
-  prompt.get(schema, function (err, result) {
-    if (result.Item.toLowerCase() == 'done') {
-      orderEntered()
+function ask2() {
+  inquirer.prompt(questions2).then(function (answers) {
+    orderArr.push(answers.item, answers.amount)
+    if (answers.startOver == false) {
+      orderArr = []
+      console.log("Please enter the order again");
+      ask1()
     } else {
-      let order = {
-        item: result.Item,
-        amount: result.Amount
-      }
-      arr.push(order)
-      getOrder()
+      //let order = convertOrder(orderArr, menu)
+      console.log("Successfull Order")
     }
-  });
-}
-*/
-
-/*
-function todaysMenu() {
-  console.log('\n');
-  console.log("When your order is ready:\n")
-  console.log("Please enter the item in the item prompt");
-  console.log("and the amount ordered in the amount prompt\n");
-  console.log("when your order is finished:\n");
-  console.log("Enter 'Done' in the item prompt");
-  console.log("Enter 0 in the amount prompt\n");
+  }).catch((error) => {
+        console.log(error);
+  })
 }
 
-function orderEntered() {
-  console.log(arr)
+function ask3(order) {
+  inquirer.prompt(questions2).then(function (answers) {
+    orderArr.push(answers.item, answers.amount)
+    if (answers.startOver == false) {
+      orderArr = []
+      console.log("Please enter the order again");
+      ask1()
+    } else {
+      let order = convertOrder(orderArr, menu)
+      console.log("Successfull Order")
+    }
+  }).catch((error) => {
+        console.log(error);
+  })
 }
-*/
+
 
 
 
@@ -109,5 +115,5 @@ console.log(formatMenu(menu, 38))
 //prompt.start()
 //getOrder()
 
-ask()
+ask1()
 module.exports = { }

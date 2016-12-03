@@ -118,7 +118,7 @@ describe("Order Print", function() {
             it("can be formatted to string", function() {
                 const orderStr = formatOrder(order, menu, 30)
                 const expectedStr = [
-                    "Here is your reciept:         \n",
+                    "Here is your order:         \n",
                     "2 x Hamburgers:         30 EUR",
                     "2 x French Fries:       10 EUR",
                     "1 x Pizza:              12 EUR",
