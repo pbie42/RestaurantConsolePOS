@@ -5,39 +5,44 @@ let doc = new pdf
 
 doc.pipe(fs.createWriteStream('receipt.pdf'))
 
-doc.font('fonts/Ewert-Regular.ttf', 10)
-     .fontSize(30)
-     .text('The Old Pittsburgh',{
-       align: 'center'
-     })
+function fillLogo() {
+  return new Promise(function(resolve, reject) {
+    doc.font('fonts/Ewert-Regular.ttf', 10)
+         .fontSize(30)
+         .text('The Old Pittsburgh',{
+           align: 'center'
+         })
 
 
-doc.image('images/Locomotive_Drawing_from_1894.PNG', 175, 105, {
-  scale: 0.18
-})
-
-
-doc.moveDown()
-doc.moveDown()
-doc.moveDown()
-
-
-doc.font('fonts/Rye-Regular.ttf', 0, 200)
-     .fontSize(20)
-     .text('A Family Style Restaurant',{
-       align: 'center'
-     })
-
-doc.moveUp()
-doc.text('_______________________________________________________')
-
-doc.text('', 252, 265, {
-      align: 'center'
+    doc.image('images/Locomotive_Drawing_from_1894.PNG', 175, 105, {
+      scale: 0.18
     })
-    .font('fonts/Roboto-Medium.ttf')
-    .fontSize(20)
-    .fillColor('#000000')
-    .text('Your Order')
+
+
+    doc.moveDown()
+    doc.moveDown()
+    doc.moveDown()
+
+
+    doc.font('fonts/Rye-Regular.ttf', 0, 200)
+         .fontSize(20)
+         .text('A Family Style Restaurant',{
+           align: 'center'
+         })
+
+    doc.moveUp()
+    doc.text('_______________________________________________________')
+
+    doc.text('', 252, 265, {
+          align: 'center'
+        })
+        .font('fonts/Roboto-Medium.ttf')
+        .fontSize(20)
+        .fillColor('#000000')
+        .text('Your Order')
+    resolve()
+  });
+}
 
 function fillInArea() {
   return new Promise(function(resolve, reject) {
@@ -306,26 +311,91 @@ function labels() {
         .fillColor('#000000')
         .text('and we hope to see you soon!')
 
+    resolve()
+  });
+}
+
+function printItemLine(item, line) {
+  doc.text('', 72, 315 + line)
+      .font('fonts/Roboto-Light.ttf')
+      .fontSize(10)
+      .fillColor('#000000')
+      .text(item.name)
+
+  doc.text('', 371, 315 + line)
+      .font('fonts/Roboto-Light.ttf')
+      .fontSize(10)
+      .fillColor('#000000')
+      .text(item.qty)
+
+  doc.text('', 402, 315 + line)
+      .font('fonts/Roboto-Light.ttf')
+      .fontSize(10)
+      .fillColor('#000000')
+      .text((item.priceUnit / 100) + ".00")
+
+  doc.text('', 461, 315 + line)
+      .font('fonts/Roboto-Light.ttf')
+      .fontSize(10)
+      .fillColor('#000000')
+      .text((item.priceTotal / 100)  + ".00")
+
+}
+
+function orderFill(order) {
+  return new Promise(function(resolve, reject) {
+    let x = 0
+    const len = order.length
+    console.log(len);
+    for (let i = 0; i < len - 1; i++) {
+      printItemLine(order[i], x)
+      x += 20
+    }
+    doc.text('', 461, 635)
+        .font('fonts/Roboto-Light.ttf')
+        .fontSize(10)
+        .fillColor('#000000')
+        .text(order[len - 1].subTotal + ".00")
+
+    doc.text('', 461, 675)
+        .font('fonts/Roboto-Light.ttf')
+        .fontSize(10)
+        .fillColor('#000000')
+        .text(order[len - 1].tip)
+
+    doc.text('', 461, 695)
+        .font('fonts/Roboto-Light.ttf')
+        .fontSize(10)
+        .fillColor('#000000')
+        .text(order[len - 1].total)
     doc.end()
     resolve()
   });
 }
 
-function items(order) {
-  return new Promise(function(resolve, reject) {
-    //TODO Need to figure out what information I'm going to pass here and also
-    //figure out what kind of loops need to be done
-  });
-}
-
-fillInArea().then(function (x) {
-  totalArea(x).then(function (len) {
-    borders(len).then(function () {
-      labels().then(function () {
-        console.log("Your Receipt is ready!");
+function makeReceipt(order) {
+  fillLogo().then(function () {
+    fillInArea().then(function (x) {
+      totalArea(x).then(function (len) {
+        borders(len).then(function () {
+          labels().then(function () {
+            orderFill(order).then(function () {
+              console.log("Your Receipt is ready!");
+            }).catch((error) => {
+              console.log(error);
+            })
+          })
+        })
       })
     })
   })
-}).catch((error) => {
-  console.log(error);
-})
+}
+
+//TODO Decide to add a discount option or not
+//TODO Align totals to the Right
+//TODO Fix tips to not go past two decimal places
+//TODO Need to add euro sign and extra .00 if necessary
+//TODO Decide whether to allow splitting or not
+//TODO Error Test Everything!!!!!
+
+module.exports = { makeReceipt }

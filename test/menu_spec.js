@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 
-const { formatOrder, formatOrderLine, priceFor, getItemID, convertOrder } = require(process.cwd() + "/src/main")
+const { formatOrder, formatOrderLine, priceFor, getItemID, convertOrder, getItemInfo, computeOrderTotal, prepareReceipt } = require(process.cwd() + "/src/main")
 
 const { loadMenu, formatMenu, formatMenuLine, getMenuItems } = require(process.cwd() + "/src/menu")
 
@@ -81,21 +81,6 @@ describe("Get Order", function () {
 
 })
 
-
-/*
-describe("Order Check", function () {
-
-  it("checks if item is on the menu", function () {
-    const itemName = "French Fries"
-    const menu = loadMenu("menu")
-    const menuCheck = checkItem(itemName, menu)
-    const expectedResult = true
-    expect(menuCheck).to.equal(expectedResult)
-  })
-
-})
-*/
-
 describe("Order Print", function() {
 
     describe("Printing", function(){
@@ -131,5 +116,61 @@ describe("Order Print", function() {
         })
 
     })
+
+})
+
+describe("Prepare Receipt", function () {
+
+  const menu = loadMenu("menu")
+
+  describe("Gets Item Info", function () {
+    const item = {id: 1, qty: 2}
+    const itemInfo = getItemInfo(item, menu)
+    const expectedResult = {
+      name: "Hamburger",
+      qty: 2,
+      priceUnit: 1500,
+      priceTotal: 3000
+    }
+    it("Returns and object with all the Item info and total", function () {
+      expect(itemInfo).to.eql(expectedResult)
+    })
+  })
+
+  describe("Combine Data", function () {
+    const order = [ { id: 1, qty: 2 }, {id: 3, qty: 2 }, { id: 4, qty: 1 } ]
+    const subTotal = computeOrderTotal(order, menu)
+    const tip = subTotal * 0.20
+    const receiptInfo = prepareReceipt(order, menu, tip)
+    const expectedResult = [
+      {
+        name: "Hamburger",
+        qty: 2,
+        priceUnit: 1500,
+        priceTotal: 3000
+      },
+      {
+        name: "French Fries",
+        qty: 2,
+        priceUnit: 500,
+        priceTotal: 1000
+      },
+      {
+        name: "Pizza",
+        qty: 1,
+        priceUnit: 1200,
+        priceTotal: 1200
+      },
+      {
+        subTotal: subTotal,
+        tip: tip,
+        total: subTotal + parseInt(tip)
+      }
+    ]
+    it("Puts order data into array of objects for the receipt", function () {
+      expect(receiptInfo).to.eql(expectedResult)
+    })
+
+  })
 
 })

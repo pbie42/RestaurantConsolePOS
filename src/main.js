@@ -4,16 +4,33 @@ function loadMenu(fileName) {
     return parseJSON(loadJSON(fileName))
 }
 
-/*
-function checkItem(item, menu) {
+function prepareReceipt(order, menu, tip) {
+  const result = order.map(item => getItemInfo(item, menu))
+  const subTotal = computeOrderTotal(order, menu)
+  const total = subTotal + tip
+  const price = {
+    subTotal: subTotal,
+    tip: tip,
+    total: subTotal + parseInt(tip)
+  }
+  result.push(price)
+  return result
+}
+
+function getItemInfo({id, qty}, menu) {
   for (let key in menu) {
-    if (item.toLowerCase() == menu[key].name.toLowerCase()) {
-      return true
+    if (key == id) {
+      let price = menu[key].price.amount
+      let itemInfo = {
+        name: menu[key].name,
+        qty: qty,
+        priceUnit: price,
+        priceTotal: price * qty
+      }
+      return itemInfo
     }
   }
-  return false
 }
-*/
 
 function getItemID(itemName, menu) {
   for (let key in menu) {
@@ -80,4 +97,4 @@ function computeOrderTotal(order, menu) {
     return order.reduce(summing, 0)
 }
 
-module.exports = { formatOrder, formatOrderLine, priceFor, getItemID, convertOrder }
+module.exports = { formatOrder, formatOrderLine, priceFor, getItemID, getItemInfo, convertOrder, computeOrderTotal, prepareReceipt }
