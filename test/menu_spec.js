@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 
-const { formatOrder, formatOrderLine, priceFor, getItemID, convertOrder, getItemInfo, computeOrderTotal, prepareReceipt } = require(process.cwd() + "/src/main")
+const { formatOrder, formatOrderLine, priceFor, getItemID, convertOrder, getItemInfo, computeOrderTotal, prepareReceipt, checkDuplicates } = require(process.cwd() + "/src/main")
 
 const { loadMenu, formatMenu, formatMenuLine, getMenuItems } = require(process.cwd() + "/src/menu")
 
@@ -178,6 +178,15 @@ describe("Prepare Receipt", function () {
       expect(receiptInfo).to.eql(expectedResult)
     })
 
+  })
+
+  describe("Search for duplicates", function () {
+    const order = [ { id: 1, qty: 2 }, {id: 3, qty: 2 }, { id: 4, qty: 1 }, { id: 1, qty: 3 } ]
+    const expectedResult = [ { id: 1, qty: 5 }, {id: 3, qty: 2 }, { id: 4, qty: 1 } ]
+    const combinedOrder = checkDuplicates(order)
+    it("Searches order for item duplicates and combines the quantities", function () {
+      expect(combinedOrder).to.eql(expectedResult)
+    })
   })
 
 })

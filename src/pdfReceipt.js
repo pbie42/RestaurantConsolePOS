@@ -112,7 +112,6 @@ function fillInArea() {
 
 function totalArea(x) {
   return new Promise(function(resolve, reject) {
-    console.log(x);
     const j = 322 + x
     const y = 340 + x
     let k = 0
@@ -344,15 +343,12 @@ function printItemLine(item, line) {
 }
 
 function printToSize(amount, nextLine) {
-  console.log("amount is " + amount);
   const subLen = amount.toString().length
   let move = 0
-  console.log("sublen is " + subLen);
   if (subLen > 4) {
     move = subLen - 4
   }
   move = move * 5
-  console.log(move);
   doc.text('', 511 - move, 635 + nextLine)
       .font('fonts/Roboto-Light.ttf')
       .fontSize(10)
@@ -365,15 +361,14 @@ function orderFill(order) {
     let x = 0
     const len = order.length
     const totals = order[len - 1]
-    console.log(len);
     for (let i = 0; i < len - 1; i++) {
       printItemLine(order[i], x)
       x += 20
     }
     printToSize(totals.subTotal, 0)
-    printToSize(totals.discount, 20)
+    printToSize("-" + totals.discount, 20)
     printToSize(totals.tip, 40)
-    printToSize(totals.total, 60)
+    printToSize(totals.total + "€", 60)
 
     doc.end()
     resolve()
@@ -381,6 +376,7 @@ function orderFill(order) {
 }
 
 function makeReceipt(order) {
+  console.log("\nYour receipt is being made...\n");
   fillLogo().then(function () {
     fillInArea().then(function (x) {
       totalArea(x).then(function (len) {
@@ -398,11 +394,10 @@ function makeReceipt(order) {
   })
 }
 
-//TODO Decide to add a discount option or not
-//TODO Align totals to the Right
-//TODO Fix tips to not go past two decimal places
-//TODO Need to add euro sign and extra .00 if necessary
-//TODO Decide whether to allow splitting or not
+
+
+
+//TODO Need to add euro sign
 //TODO Error Test Everything!!!!!
 //TODO Handle duplicates
 

@@ -2,7 +2,7 @@ const prompt = require('prompt')
 const inquirer = require('inquirer')
 const colors = require('colors')
 
-const { formatOrder, Line, convertOrder, computeOrderTotal, prepareReceipt} = require(process.cwd() + "/src/main")
+const { formatOrder, Line, convertOrder, computeOrderTotal, prepareReceipt, checkDuplicates} = require(process.cwd() + "/src/main")
 const { loadMenu, checkItem, getMenuItems, formatMenu } = require(process.cwd() + "/src/menu")
 const { makeReceipt } = require(process.cwd() + "/src/pdfreceipt.js")
 const { roundUp } = require(process.cwd() + "/src/utils.js")
@@ -48,7 +48,8 @@ function ask1() {
       ask1()
     } else {
       let order = convertOrder(orderArr, menu)
-      console.log(formatOrder(order, menu, 30))
+      const combinedOrder = checkDuplicates(order)
+      console.log(formatOrder(combinedOrder, menu, 30))
       ask2(order)
     }
   }).catch((error) => {
@@ -68,10 +69,9 @@ function ask2(order) {
   inquirer.prompt(questions2).then(function (answers) {
     if (answers.startOver == false) {
       orderArr = []
-      console.log("Please enter the order again");
+      console.log("\n\nPlease enter the order again\n");
       ask1()
     } else {
-      console.log("Successfull Order")
       ask3(order)
     }
   }).catch((error) => {
@@ -94,7 +94,6 @@ function ask3(order) {
   inquirer.prompt(questions3).then(function (answers) {
     let tip = 0
     if (answers.tip == 'Other') {
-      console.log("We got other homie");
       ask4(order)
     } else if (answers.tip == 'No') {
       ask5(order, tip)
@@ -112,7 +111,7 @@ function ask4(order) {
     {
       type: 'input',
       name: 'tip',
-      message: 'What would the client like to tip?',
+      message: 'How much? (Format: 00.00):',
       validate: function (value) {
         let valid = !isNaN(parseFloat(value))
         return valid && value > 0 || 'Please enter a number or a value greater than 0'
@@ -122,8 +121,7 @@ function ask4(order) {
   ]
   inquirer.prompt(questions4).then(function (answers) {
     const tip = roundUp(answers.tip)
-    const receipt = prepareReceipt(order, menu, tip)
-    makeReceipt(Receipt)
+    ask5(order, tip)
   }).catch((error) => {
         console.log(error);
   })
@@ -163,10 +161,12 @@ function ask6(order, tip) {
     {
       type: 'input',
       name: 'discount',
-      message: 'How much would you like to take off?',
+      message: 'How much? (Format: 00.00)',
       validate: function (value) {
+        const total = computeOrderTotal(order, menu)
         let valid = !isNaN(parseFloat(value))
-        return valid && value > 0 || 'Please enter a number or a value greater than 0'
+        return valid && value > 0 && value <= total || 'Please enter a number or'
+        + ' a value greater than 0 or a value less than ' + total + '.00'
       },
       filter: Number
     }
@@ -174,7 +174,7 @@ function ask6(order, tip) {
   inquirer.prompt(questions6).then(function (answers) {
     const discount = roundUp(answers.discount)
     const receipt = prepareReceipt(order, menu, tip, discount)
-    makeReceipt(Receipt)
+    makeReceipt(receipt)
   }).catch((error) => {
         console.log(error);
   })

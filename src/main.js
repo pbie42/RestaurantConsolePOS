@@ -4,6 +4,20 @@ function loadMenu(fileName) {
     return parseJSON(loadJSON(fileName))
 }
 
+function checkDuplicates(order) {
+  for (let i = 0; i < order.length; i++) {
+    for (let j = i+1; j < order.length; ) {
+      if (order[i].id == order[j].id) {
+          order[i].qty += order[j].qty
+        order.splice(j, 1)
+      } else {
+        j++
+      }
+    }
+  }
+  return order
+}
+
 function prepareReceipt(order, menu, tip, discount) {
   const result = order.map(item => getItemInfo(item, menu))
   let subTotal = computeOrderTotal(order, menu)
@@ -101,4 +115,4 @@ function computeOrderTotal(order, menu) {
     return order.reduce(summing, 0)
 }
 
-module.exports = { formatOrder, formatOrderLine, priceFor, getItemID, getItemInfo, convertOrder, computeOrderTotal, prepareReceipt }
+module.exports = { formatOrder, formatOrderLine, priceFor, getItemID, getItemInfo, convertOrder, computeOrderTotal, prepareReceipt, checkDuplicates }
