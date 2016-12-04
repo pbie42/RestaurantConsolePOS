@@ -4,6 +4,8 @@ const { formatOrder, formatOrderLine, priceFor, getItemID, convertOrder, getItem
 
 const { loadMenu, formatMenu, formatMenuLine, getMenuItems } = require(process.cwd() + "/src/menu")
 
+const { parseIt } = require(process.cwd() + "/src/utils")
+
 describe("Display Menu", function () {
 
     describe("Printing", function () {
@@ -139,9 +141,13 @@ describe("Prepare Receipt", function () {
 
   describe("Combine Data", function () {
     const order = [ { id: 1, qty: 2 }, {id: 3, qty: 2 }, { id: 4, qty: 1 } ]
-    const subTotal = computeOrderTotal(order, menu)
-    const tip = subTotal * 0.20
-    const receiptInfo = prepareReceipt(order, menu, tip)
+    let subTotal = computeOrderTotal(order, menu)
+    const tip = parseIt(subTotal * 0.20)
+    const discount = parseIt(subTotal * 0.10)
+    const receiptInfo = prepareReceipt(order, menu, tip, discount)
+    let total = subTotal + Number(tip) - Number(discount)
+    subTotal = parseIt(subTotal)
+    total = parseIt(total)
     const expectedResult = [
       {
         name: "Hamburger",
@@ -163,8 +169,9 @@ describe("Prepare Receipt", function () {
       },
       {
         subTotal: subTotal,
+        discount: discount,
         tip: tip,
-        total: subTotal + parseInt(tip)
+        total: total
       }
     ]
     it("Puts order data into array of objects for the receipt", function () {

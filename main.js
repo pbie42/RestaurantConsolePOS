@@ -1,7 +1,4 @@
-const { loadMenu, formatOrder } = require(process.cwd() + "/src/main")
+const { ask1, welcome } = require(process.cwd() + "/src/prompt")
 
-const order = [ { id: 1, qty: 2 }, {id: 3, qty: 2 }, { id: 4, qty: 1 } ]
-
-const menu = loadMenu("menu")
-
-console.log(formatOrder(order, menu, 30))
+welcome()
+ask1()

@@ -21,5 +21,13 @@ function pluralize(str, qty) {
     return str + "s"
 }
 
+function roundUp(num) {
+  return parseFloat(Math.round(num * 100) / 100).toFixed(2);
+}
 
-module.exports = { loadJSON, parseJSON, makeSpaces, makeLine, pluralize }
+function parseIt(num) {
+  return parseFloat(num).toFixed(2)
+}
+
+
+module.exports = { loadJSON, parseJSON, makeSpaces, makeLine, pluralize, roundUp, parseIt }

@@ -1,17 +1,21 @@
-const { parseJSON, loadJSON, makeSpaces, makeLine, pluralize } = require('./utils')
+const { parseJSON, loadJSON, makeSpaces, makeLine, pluralize, parseIt } = require('./utils')
 
 function loadMenu(fileName) {
     return parseJSON(loadJSON(fileName))
 }
 
-function prepareReceipt(order, menu, tip) {
+function prepareReceipt(order, menu, tip, discount) {
   const result = order.map(item => getItemInfo(item, menu))
-  const subTotal = computeOrderTotal(order, menu)
-  const total = subTotal + tip
+  let subTotal = computeOrderTotal(order, menu)
+  let total = subTotal + Number(tip) - Number(discount)
+  total = parseIt(total)
+  subTotal = parseIt(subTotal)
+  discount = parseIt(discount)
   const price = {
     subTotal: subTotal,
+    discount: discount,
     tip: tip,
-    total: subTotal + parseInt(tip)
+    total: total
   }
   result.push(price)
   return result

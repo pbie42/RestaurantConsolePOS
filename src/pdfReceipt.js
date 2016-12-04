@@ -1,5 +1,6 @@
 const pdf = require('pdfkit')
 const fs = require('fs')
+const { roundTip } = require(process.cwd() + "/src/utils.js")
 
 let doc = new pdf
 
@@ -342,32 +343,38 @@ function printItemLine(item, line) {
 
 }
 
+function printToSize(amount, nextLine) {
+  console.log("amount is " + amount);
+  const subLen = amount.toString().length
+  let move = 0
+  console.log("sublen is " + subLen);
+  if (subLen > 4) {
+    move = subLen - 4
+  }
+  move = move * 5
+  console.log(move);
+  doc.text('', 511 - move, 635 + nextLine)
+      .font('fonts/Roboto-Light.ttf')
+      .fontSize(10)
+      .fillColor('#000000')
+      .text(amount)
+}
+
 function orderFill(order) {
   return new Promise(function(resolve, reject) {
     let x = 0
     const len = order.length
+    const totals = order[len - 1]
     console.log(len);
     for (let i = 0; i < len - 1; i++) {
       printItemLine(order[i], x)
       x += 20
     }
-    doc.text('', 461, 635)
-        .font('fonts/Roboto-Light.ttf')
-        .fontSize(10)
-        .fillColor('#000000')
-        .text(order[len - 1].subTotal + ".00")
+    printToSize(totals.subTotal, 0)
+    printToSize(totals.discount, 20)
+    printToSize(totals.tip, 40)
+    printToSize(totals.total, 60)
 
-    doc.text('', 461, 675)
-        .font('fonts/Roboto-Light.ttf')
-        .fontSize(10)
-        .fillColor('#000000')
-        .text(order[len - 1].tip)
-
-    doc.text('', 461, 695)
-        .font('fonts/Roboto-Light.ttf')
-        .fontSize(10)
-        .fillColor('#000000')
-        .text(order[len - 1].total)
     doc.end()
     resolve()
   });
@@ -397,5 +404,6 @@ function makeReceipt(order) {
 //TODO Need to add euro sign and extra .00 if necessary
 //TODO Decide whether to allow splitting or not
 //TODO Error Test Everything!!!!!
+//TODO Handle duplicates
 
 module.exports = { makeReceipt }
