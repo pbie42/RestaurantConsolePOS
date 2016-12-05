@@ -22,7 +22,7 @@ function pluralize(str, qty) {
 }
 
 function roundUp(num) {
-  return parseFloat(Math.round(num * 100) / 100).toFixed(2);
+  return parseFloat(Math.round(num * 100) / 100).toFixed(2)
 }
 
 function parseIt(num) {
